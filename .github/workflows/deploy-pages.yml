@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+          # Set these as repository secrets to use your own master login.
+          # Without them the demo login from .env.example is used (admin / KeyNest!demo).
+          VITE_MASTER_USERNAME: ${{ secrets.VITE_MASTER_USERNAME || 'admin' }}
+          VITE_MASTER_PASSWORD_HASH: ${{ secrets.VITE_MASTER_PASSWORD_HASH || 'pbkdf2:310000:R2F2ZXJ6b3VzU2FsdDEyMzQ=:MtBNEjWYuSL8PVJL3/O1whwXHHayQuPMKzLYbng8EF4=' }}
+          VITE_MS_CLIENT_ID: ${{ secrets.VITE_MS_CLIENT_ID }}
+          VITE_MS_AUTHORITY: https://login.microsoftonline.com/common
+        run: npm run build
+      # SPA fallback: GitHub Pages serves 404.html for deep links like /keynest/passwords.
+      - run: cp dist/index.html dist/404.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
