@@ -66,7 +66,8 @@ export function Sidebar({ collapsed, onToggleCollapse, onNavigate }: SidebarProp
         </Box>
       )}
 
-      <List sx={{ px: 1.25, py: 0.5, flex: 1, display: 'flex', flexDirection: 'column', gap: 0.25 }}>
+      {/* flex: 1 pushes the footer down; justifyContent keeps items packed at the top. */}
+      <List sx={{ px: 1.25, py: 0.5, flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 0.25 }}>
         {NAV.map((item) => {
           const Icon = item.icon
           return (
@@ -77,8 +78,11 @@ export function Sidebar({ collapsed, onToggleCollapse, onNavigate }: SidebarProp
                 end={item.end}
                 onClick={onNavigate}
                 sx={{
+                  // MUI's ListItemButton sets flex-grow: 1, which made each item stretch to fill the column.
+                  flexGrow: 0,
+                  minHeight: 40,
                   px: collapsed ? 0 : 1.5,
-                  py: 1,
+                  py: 0.75,
                   justifyContent: collapsed ? 'center' : 'flex-start',
                   color: 'text.secondary',
                   '&.active': { bgcolor: 'action.selected', color: 'primary.main', '& .MuiListItemText-primary': { fontWeight: 600 } },
@@ -111,7 +115,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onNavigate }: SidebarProp
           <ListItemButton
             onClick={() => void lockApp()}
             aria-label={collapsed ? 'Lock application' : undefined}
-            sx={{ px: collapsed ? 0 : 1.5, py: 0.75, justifyContent: collapsed ? 'center' : 'flex-start', color: 'text.secondary' }}
+            sx={{ flexGrow: 0, minHeight: 38, px: collapsed ? 0 : 1.5, py: 0.75, justifyContent: collapsed ? 'center' : 'flex-start', color: 'text.secondary' }}
           >
             <ListItemIcon sx={{ minWidth: collapsed ? 0 : 34, color: 'inherit', justifyContent: 'center' }}>
               <Lock size={18} />
