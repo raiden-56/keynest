@@ -1,0 +1,113 @@
+:root {
+  --kn-shimmer-base: #ecebe4;
+  --kn-shimmer-highlight: #f7f6f2;
+  --kn-cell-py: 12px;
+  --kn-card-pad: 20px;
+  --kn-sidebar-width: 248px;
+  --kn-sidebar-collapsed: 72px;
+  --kn-header-height: 64px;
+  color-scheme: light;
+}
+
+[data-mui-color-scheme='dark'] {
+  --kn-shimmer-base: #2a2d26;
+  --kn-shimmer-highlight: #363931;
+  color-scheme: dark;
+}
+
+body[data-density='compact'] {
+  --kn-cell-py: 7px;
+  --kn-card-pad: 14px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--kn-palette-primary-main);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+a {
+  color: inherit;
+}
+
+.kn-mono {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-variant-ligatures: none;
+  letter-spacing: 0.02em;
+}
+
+.kn-shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--kn-shimmer-base);
+  border-radius: 8px;
+}
+
+.kn-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent 0%, var(--kn-shimmer-highlight) 50%, transparent 100%);
+  animation: kn-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes kn-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.kn-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kn-scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .kn-shimmer::after {
+    animation: none;
+  }
+}
+
+@keyframes kn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.kn-spin {
+  animation: kn-spin 1s linear infinite;
+}
